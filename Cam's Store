@@ -1,0 +1,58 @@
+CREATE TABLE cams_store (
+  id INTEGER PRIMARY KEY,
+  product TEXT,
+  sales_price INTEGER,
+  aisle INTEGER,
+  is_organic BIT
+);
+
+INSERT INTO cams_store (
+    id,
+    product,
+    sales_price,
+    aisle,
+    is_organic BIT
+)
+
+VALUES
+    (
+        1,
+        'lettuce',
+        .8,
+        1,
+        1
+        
+    ),
+    (
+        2,
+        'doritos',
+        4,
+        2,
+        0
+    ),
+    (
+        3,
+        'Chicken',
+        6,
+        3,
+        1
+    ), 
+    (
+        4,
+        'hot dogs',
+        3,
+        3,
+        0
+    ),
+    (
+        5,
+        'peppers',
+        2,
+        1,
+        1
+    ),
+    
+    select product, AVG(sales_price)
+    from cams_store
+    where is_organic = 1
+    order by aisle;
