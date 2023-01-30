@@ -1,2 +1,5 @@
 # SQL
-This Repository is meant to showcase my SQL abilitessss
+
+| Project Name  | Description   |
+| ------------- | ------------- |
+| Cam's Store   | Wrote SQL code to create table, insert values, and run quesry to pull and aggregate data  | 
