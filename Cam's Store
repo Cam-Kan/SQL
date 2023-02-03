@@ -1,5 +1,5 @@
 CREATE TABLE cams_store (
-  id INTEGER PRIMARY KEY,
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
   product TEXT,
   sales_price INTEGER,
   aisle INTEGER,
