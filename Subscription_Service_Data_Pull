@@ -1,0 +1,82 @@
+-- Creating the subscribers table to store subscription-based service user details.
+CREATE TABLE subscribers (
+    -- Unique identifier for each subscriber.
+    subscriber_id INT PRIMARY KEY AUTO_INCREMENT,
+    
+    -- Subscriber's first and last name.
+    first_name VARCHAR(50) NOT NULL,
+    last_name VARCHAR(50) NOT NULL,
+    
+    -- Subscriber's email address. It should be unique across all subscribers.
+    email VARCHAR(100) UNIQUE NOT NULL,
+    
+    -- Date when the subscriber first joined the service.
+    date_subscribed DATE NOT NULL,
+    
+    -- Subscription tier. Can be 'Tier 1', 'Tier 2', or 'Tier 3'.
+    subscription_type ENUM('Tier 1', 'Tier 2', 'Tier 3') DEFAULT 'Tier 1',
+    
+    -- Expiry date of the current subscription. Useful for tracking subscription validity.
+    subscription_expiry DATE,
+    
+    -- Last payment method used by the subscriber. For instance: 'Credit Card', 'PayPal', etc.
+    payment_method VARCHAR(100),
+    
+    -- Date when the last payment was made.
+    last_payment_date DATE,
+    
+    -- Indicates whether the subscriber is active or has deactivated their account.
+    active BOOLEAN DEFAULT TRUE,
+    
+    -- Indicates if the subscription will automatically renew once it expires.
+    auto_renew BOOLEAN DEFAULT TRUE
+);
+
+-- Inserting mock data into the subscribers table
+INSERT INTO subscribers (
+    first_name, last_name, email, date_subscribed, subscription_type, subscription_expiry, payment_method, last_payment_date, active, auto_renew
+) VALUES 
+    ('John', 'Doe', 'john.doe@example.com', '2023-01-15', 'Tier 1', '2024-01-15', 'Credit Card', '2023-01-15', TRUE, TRUE),
+    ('Jane', 'Smith', 'jane.smith@example.com', '2023-03-10', 'Tier 2', '2024-03-10', 'PayPal', '2023-03-10', TRUE, FALSE),
+    ('Robert', 'Brown', 'robert.brown@example.com', '2023-04-05', 'Tier 3', '2024-04-05', 'Credit Card', '2023-04-05', TRUE, TRUE),
+    ('Emily', 'Clark', 'emily.clark@example.com', '2023-02-20', 'Tier 1', '2024-02-20', NULL, NULL, TRUE, FALSE),
+    ('Michael', 'Johnson', 'michael.johnson@example.com', '2023-05-22', 'Tier 2', '2024-05-22', 'PayPal', '2023-05-22', FALSE, TRUE),
+    ('Alice', 'Williams', 'alice.williams@example.com', '2023-06-12', 'Tier 3', '2024-06-12', 'Credit Card', '2023-06-12', TRUE, TRUE),
+    ('David', 'Jones', 'david.jones@example.com', '2023-07-04', 'Tier 1', '2024-07-04', 'Credit Card', '2023-07-04', TRUE, FALSE),
+    ('Sophia', 'Taylor', 'sophia.taylor@example.com', '2023-08-16', 'Tier 2', '2024-08-16', 'PayPal', '2023-08-16', TRUE, TRUE),
+    ('James', 'Davis', 'james.davis@example.com', '2023-09-05', 'Tier 3', '2024-09-05', 'Credit Card', '2023-09-05', FALSE, FALSE),
+    ('Charlotte', 'Miller', 'charlotte.miller@example.com', '2023-10-20', 'Tier 1', '2024-10-20', 'PayPal', '2023-10-20', TRUE, TRUE);
+
+-- Transactions table
+CREATE TABLE transactions (
+    transaction_id INT PRIMARY KEY AUTO_INCREMENT,
+    subscriber_id INT,                        -- Foreign Key linking to the subscribers table
+    transaction_date DATE NOT NULL,
+    amount DECIMAL(10, 2) NOT NULL,
+    payment_method VARCHAR(100),
+    payment_status ENUM('Completed', 'Pending', 'Failed') NOT NULL,
+    transaction_note TEXT,
+    FOREIGN KEY (subscriber_id) REFERENCES subscribers(subscriber_id)
+);
+
+-- Query to calculate the total amount each subscriber has paid
+
+-- Begin SELECT to retrieve relevant fields
+SELECT 
+    s.subscriber_id,                   -- Unique ID of the subscriber
+    s.first_name,                      -- First name of the subscriber
+    s.last_name,                       -- Last name of the subscriber
+    SUM(t.amount) AS total_paid        -- Aggregate sum of payment amounts for each subscriber
+FROM 
+    subscribers s                      -- Aliasing 'subscribers' table as 's'
+JOIN 
+    transactions t                     -- Aliasing 'transactions' table as 't'
+    ON s.subscriber_id = t.subscriber_id
+WHERE 
+    t.payment_status = 'Completed'     -- Filtering to only consider completed payments
+GROUP BY 
+    s.subscriber_id, s.first_name, s.last_name   -- Grouping results by individual subscriber
+ORDER BY 
+    total_paid DESC;                  -- Sorting results by total paid amount in descending order
+
+-- 
