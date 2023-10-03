@@ -1,57 +1,30 @@
+-- Creating the cams_store table
 CREATE TABLE cams_store (
   id INTEGER PRIMARY KEY AUTOINCREMENT,
   product TEXT,
-  sales_price INTEGER,
+  sales_price REAL, -- Changing INTEGER to REAL to handle decimal prices like 0.8
   aisle INTEGER,
   is_organic BIT
 );
 
-INSERT INTO cams_store (
-    product,
-    sales_price,
-    aisle,
-    is_organic BIT
-)
-
+-- Inserting sample data into cams_store table
+INSERT INTO cams_store (product, sales_price, aisle, is_organic)
 VALUES
-    (
-        
-        'lettuce',
-        .8,
-        1,
-        1
-        
-    ),
-    (
-        
-        'doritos',
-        4,
-        2,
-        0
-    ),
-    (
-        
-        'Chicken',
-        6,
-        3,
-        1
-    ), 
-    (
-        
-        'hot dogs',
-        3,
-        3,
-        0
-    ),
-    (
-        
-        'peppers',
-        2,
-        1,
-        1
-    ),
-    
-    select product, AVG(sales_price)
-    from cams_store
-    where is_organic = 1
-    order by aisle;
+    ('lettuce', 0.8, 1, 1),
+    ('doritos', 4.0, 2, 0),
+    ('Chicken', 6.0, 3, 1), 
+    ('hot dogs', 3.0, 3, 0),
+    ('peppers', 2.0, 1, 1);
+
+-- Query to fetch the average sales price of organic products
+SELECT 
+    product,
+    AVG(sales_price) AS avg_sales_price
+FROM 
+    cams_store
+WHERE 
+    is_organic = 1
+GROUP BY
+    product
+ORDER BY 
+    aisle;
